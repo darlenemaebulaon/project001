@@ -6,7 +6,8 @@ class Page2 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Page 2')),
       body: Center(
-        child: Text('Welcome to Page 2!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        child: Text('Welcome to Page 2!',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
       ),
     );
   }
