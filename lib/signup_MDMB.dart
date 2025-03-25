@@ -21,10 +21,10 @@ class _SignUpPageState extends State<SignUpPage> {
     final url = Uri.parse('https://reqres.in/api/users');
 
     final Map<String, dynamic> requestData = {
-      'last_name': _lastNameController,
-      'first_name': _firstNameController,
-      'username': _userNameController,
-      'password': _passwordController
+      'last_name': _lastNameController.text,
+      'first_name': _firstNameController.text,
+      'username': _userNameController.text,
+      'password': _passwordController.text
     };
 
     try {
@@ -33,10 +33,21 @@ class _SignUpPageState extends State<SignUpPage> {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestData),
       );
-      print("Response Status: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User created successfully!')),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create user: ${response.body}')),
+        );
+      }
     } catch (e) {
-      print("Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
@@ -45,27 +56,35 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Sign Up')),
       body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
                 controller: _lastNameController,
                 decoration: InputDecoration(labelText: 'Last Name'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter last name' : null,
               ),
               TextFormField(
                 controller: _firstNameController,
                 decoration: InputDecoration(labelText: 'First Name'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter first name' : null,
               ),
               TextFormField(
                 controller: _userNameController,
                 decoration: InputDecoration(labelText: 'Username'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter username' : null,
               ),
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter password' : null,
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -73,12 +92,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Text('Create User'),
               ),
             ],
-          )),
+          ),
+        ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(home: SignUpPage()));
 }
