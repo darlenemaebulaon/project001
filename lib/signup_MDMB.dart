@@ -13,18 +13,23 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
+  
   Future<void> _createUser() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final url = Uri.parse('https://reqres.in/api/users');
+    final url = Uri.parse('http://127.0.0.1:8000/registration/api/register');
 
     final Map<String, dynamic> requestData = {
-      'last_name': _lastNameController.text,
       'first_name': _firstNameController.text,
+      'last_name': _lastNameController.text,
       'username': _userNameController.text,
-      'password': _passwordController.text
+      'email': _emailController.text,
+      'password': _passwordController.text,
+      'confirm_password': _confirmPasswordController.text,
     };
 
     try {
@@ -59,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
               TextFormField(
                 controller: _lastNameController,
@@ -80,8 +85,21 @@ class _SignUpPageState extends State<SignUpPage> {
                     value!.isEmpty ? 'Please enter username' : null,
               ),
               TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) =>
+                  value == null || value.isEmpty ? 'Please enter email' : null,
+              ),
+              TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter password' : null,
+              ),
+              TextFormField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(labelText: 'Confirm Password'),
                 obscureText: true,
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter password' : null,
